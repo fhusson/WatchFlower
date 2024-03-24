@@ -25,7 +25,7 @@ jobs:
   ## Android build #############################################################
   build-android:
     name: "Android CI build"
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       # Checkout repository (and submodules)
       - name: Checkout repository (and submodules)
@@ -71,36 +71,3 @@ jobs:
         run: |
              qmake ${{env.APP_NAME}}.pro CONFIG+=release
              make -j$(nproc)
-
-  ## iOS build #################################################################
-  build-ios:
-    name: "iOS CI build"
-    runs-on: macos-12
-    steps:
-      # Checkout repository (and submodules)
-      - name: Checkout repository (and submodules)
-        uses: actions/checkout@v4
-        with:
-          submodules: recursive
-
-      # Install Qt (iOS & desktop)
-      - name: Install Qt (iOS & desktop)
-        uses: jurplel/install-qt-action@v3
-        with:
-          version: ${{env.QT_VERSION}}
-          aqtversion: '==3.1.*'
-          host: 'mac'
-          target: 'ios'
-          modules: qtconnectivity qtcharts qtshadertools qt5compat
-          extra: '--autodesktop'
-
-      # Setup env
-      - name: Setup env
-        run: |
-             qmake --version
-
-      # Build application
-      - name: Build application
-        run: |
-             qmake ${{env.APP_NAME}}.pro CONFIG+=release
-             make -j`sysctl -n hw.logicalcpu`
